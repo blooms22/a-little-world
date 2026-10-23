@@ -124,6 +124,15 @@
   .content { line-height:1.6; font-size:.9rem; }
   .content p { margin-top:8px; }
   .artifact, .letter { background:#303d5b; border:2px solid #7586aa; padding:10px; margin:9px 0; }
+  .artifact { padding:0; overflow:hidden; }
+  .artifact summary { list-style:none; cursor:pointer; display:flex; flex-wrap:wrap; align-items:center; gap:5px 10px; padding:12px; color:#ffe0a0; font-size:.9rem; font-weight:bold; }
+  .artifact summary::-webkit-details-marker { display:none; }
+  .artifact summary::after { content:"＋"; margin-left:auto; color:var(--gold); font-size:1rem; }
+  .artifact[open] summary::after { content:"−"; }
+  .artifact summary:hover, .artifact summary:focus-visible { background:#3a496b; outline:2px solid var(--gold); outline-offset:-2px; }
+  .artifact .artifact-subtitle { color:var(--muted); font-size:.75rem; font-weight:normal; }
+  .artifact-details { border-top:1px solid #7586aa; padding:10px 12px 12px; }
+  .artifact-details p { margin:8px 0; overflow-wrap:anywhere; }
   .artifact h3,.letter h3 { color:#ffe0a0; margin:0 0 6px; font-size:.9rem; }
   .small { font-size:.75rem; color:var(--muted); }
   .hidden { display:none !important; }
@@ -259,7 +268,7 @@ function openPlace(place) {
   if (place === "museum") {
     $("sceneTitle").textContent="THE MUSEUM OF US";
     $("sideTitle").textContent="ARTIFACTS";
-    const cards = GAME.artifacts.map((a,i)=>`<div class="artifact"><h3>${a.icon} ${escapeHtml(a.title)}</h3><div class="small">${escapeHtml(a.subtitle)}</div><p>${escapeHtml(a.text)}</p>${a.link ? `<p><a style="color:#ffe0a0" href="${escapeHtml(a.link)}" target="_blank" rel="noopener">Listen to the song ↗</a></p>`:""}<button onclick="collectArtifact(${i})">Read / collect memory</button></div>`).join("");
+    const cards = GAME.artifacts.map((a,i)=>`<details class="artifact"><summary><span>${a.icon} ${escapeHtml(a.title)}</span><span class="artifact-subtitle">${escapeHtml(a.subtitle)}</span></summary><div class="artifact-details"><p>${escapeHtml(a.text)}</p>${a.link ? `<p><a style="color:#ffe0a0" href="${escapeHtml(a.link)}" target="_blank" rel="noopener">Listen to the song ↗</a></p>`:""}<button onclick="collectArtifact(${i})">${i < 2 && !found.has("artifact"+i) ? "Collect memory star ✦" : "Memory collected ✓"}</button></div></details>`).join("");
     $("sideContent").innerHTML = `<p>${escapeHtml(GAME.museumIntro)}</p>${cards}`;
     $("status").textContent = "The museum doors creak open. Every artifact has a story.";
   } else if (place === "letters") {
@@ -290,9 +299,9 @@ function collectArtifact(i) {
   if (i < 2 && !found.has("artifact"+i)) {
     found.add("artifact"+i);
     updateProgress();
-    showModal("Memory star found!", `<p>You found a star tucked beside this artifact.</p><p><strong>${escapeHtml(GAME.artifacts[i].title)}</strong></p><p>${escapeHtml(GAME.artifacts[i].text)}</p>`);
+    showModal("Memory star found!", `<p>You found a star tucked beside <strong>${escapeHtml(GAME.artifacts[i].title)}</strong>.</p><p>Its story will be here whenever you want to unfold it.</p>`);
   } else {
-    showModal(GAME.artifacts[i].title, `<p>${escapeHtml(GAME.artifacts[i].text)}</p>`);
+    showModal("A memory to keep", `<p><strong>${escapeHtml(GAME.artifacts[i].title)}</strong> is safe in your journal. Expand its card whenever you want to read the full story.</p>`);
   }
 }
 function openLetter(i) {
