@@ -133,6 +133,9 @@
   .artifact .artifact-subtitle { color:var(--muted); font-size:.75rem; font-weight:normal; }
   .artifact-details { border-top:1px solid #7586aa; padding:10px 12px 12px; }
   .artifact-details p { margin:8px 0; overflow-wrap:anywhere; }
+  .timeline-list { margin:4px 0 12px; padding-left:24px; }
+  .timeline-list li { margin:0 0 10px; padding-left:3px; line-height:1.55; overflow-wrap:anywhere; }
+  .timeline-list li::marker { color:var(--gold); }
   .artifact h3,.letter h3 { color:#ffe0a0; margin:0 0 6px; font-size:.9rem; }
   .small { font-size:.75rem; color:var(--muted); }
   .hidden { display:none !important; }
@@ -213,7 +216,22 @@ const GAME = {
   museumIntro: "Every little thing can become an artifact when it matters to the right people. Welcome to our museum.",
   artifacts: [
     { title: "Artifact I — The Beginning", subtitle: "You found a manuscript from 0916", text: "'This is the very beginning of your legendary conversation with Lukc.' Who would've thought that this text would change one's life? That my journal would have an entry of 'There's this guy...'? Remember how at first I thought you were gay? Hahahah. That's because, I didn't know a straight man listening to Laufey. But then, as we spoke, I realized 'Gosh, this is the sweetest guy to exist' Ever since then, my love, our conversations have been more than just legendary, and I've been selfish enough to keep you close. I got to know your personality, the things that make you laugh, the things you love, the music you listen to; I got to hear your voice and laugh and meet the kind and sweet heart of yours. To fall in love with how much of a history nerd you are, and how your humor works. 'Hii's and 'whats up's turned into 'I love yous' and 'I miss yous.' You and I turned into us. And truly, I will forever thank God for giving me you, for letting our paths cross, and for writing you as my Fate. Baby, I love you so much. To discover my love for you in under a month is mind-blowing, but also the greatest experience I've ever had. Every single day, I discover how much more I could love you all over again 🥹", icon: "📜" },
-    { title: "Artifact II — A Tiny Tradition", subtitle: "A List of History", text: " • First 'Hiii' - 09/16/2026 • Aleksandria's First 'I love you' - 09/23/2026", icon: "🗝" },
+    { title: "Artifact II — A Tiny Tradition", subtitle: "Our Little Timeline", items: [
+      "First 'Hiii' — 09/16/2026, 02:29",
+      "First Reel Sent (By Aleksandria) — 09/19/2026, 02:30",
+      "First Reel Sent by Luka — 09/19/2026, 15:26",
+      "First Time Pooping was mentioned — 09/19/2026, 17:06",
+      "Talking About Traveling the World Together — 09/19/2026, 19:07",
+      "Aleksandria's First Voice Message — 09/21/2026, 22:59",
+      "Aleksandria's First 'I love you' — 09/23/2026, 01:48",
+      "Luka's First 'I love you' — 09/23/2026, 03:12",
+      "When Marriage Entered the Convo (Luka) — 09/23/2026, 03:20",
+      "First Time Luka said 'My girl' — 09/23/2026, 03:20",
+      "Aleksandria's First Breakdown — 09/25/2026, 00:48",
+      "First Time 'Nigga' was said (Luka) — 09/26/2026, 11:22",
+      "Agreeing on 3 Kids — 09/27/2026, 02:19",
+      "First Time Aleksandria said 'Nigga' — 10/14/2026, 12:58"
+    ], icon: "🗝" },
     { title: "Artifact III — A Song in a Bottle", subtitle: "A song that reminds you of him", text: "[Name the song and explain what it reminds you of. You can add a song link below.]", icon: "♫", link: "" },
     { title: "Artifact IV — A Milestone", subtitle: "A moment worth remembering", text: "[Write about a moment when you felt especially grateful for him or proud of your relationship.]", icon: "✦" }
   ],
@@ -268,7 +286,7 @@ function openPlace(place) {
   if (place === "museum") {
     $("sceneTitle").textContent="THE MUSEUM OF US";
     $("sideTitle").textContent="ARTIFACTS";
-    const cards = GAME.artifacts.map((a,i)=>`<details class="artifact"><summary><span>${a.icon} ${escapeHtml(a.title)}</span><span class="artifact-subtitle">${escapeHtml(a.subtitle)}</span></summary><div class="artifact-details"><p>${escapeHtml(a.text)}</p>${a.link ? `<p><a style="color:#ffe0a0" href="${escapeHtml(a.link)}" target="_blank" rel="noopener">Listen to the song ↗</a></p>`:""}<button onclick="collectArtifact(${i})">${i < 2 && !found.has("artifact"+i) ? "Collect memory star ✦" : "Memory collected ✓"}</button></div></details>`).join("");
+    const cards = GAME.artifacts.map((a,i)=>`<details class="artifact"><summary><span>${a.icon} ${escapeHtml(a.title)}</span><span class="artifact-subtitle">${escapeHtml(a.subtitle)}</span></summary><div class="artifact-details">${a.items ? `<ol class="timeline-list">${a.items.map(item=>`<li>${escapeHtml(item)}</li>`).join("")}</ol>` : `<p>${escapeHtml(a.text)}</p>`}${a.link ? `<p><a style="color:#ffe0a0" href="${escapeHtml(a.link)}" target="_blank" rel="noopener">Listen to the song ↗</a></p>`:""}<button onclick="collectArtifact(${i})">${i < 2 && !found.has("artifact"+i) ? "Collect memory star ✦" : "Memory collected ✓"}</button></div></details>`).join("");
     $("sideContent").innerHTML = `<p>${escapeHtml(GAME.museumIntro)}</p>${cards}`;
     $("status").textContent = "The museum doors creak open. Every artifact has a story.";
   } else if (place === "letters") {
