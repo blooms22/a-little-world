@@ -29,7 +29,7 @@
   .panel h2 { color:var(--gold); font-size:1rem; margin:0 0 10px; }
   .scene {
     position:relative; overflow:hidden; border:3px solid #8da1c5;
-    background:#172a3a; min-height:350px; image-rendering:pixelated;
+    background:#172a3a; min-height:440px; image-rendering:pixelated;
   }
   .scene:before { content:""; position:absolute; inset:0; opacity:.95;
     background:
@@ -42,19 +42,76 @@
     background-size:53px 47px,71px 61px; background-position:10px 7px,28px 22px; opacity:.7; pointer-events:none; }
   .mountains { position:absolute; bottom:38%; left:-5%; width:110%; height:40%; background:#283d53; clip-path:polygon(0 100%,0 68%,13% 28%,23% 61%,38% 5%,52% 58%,66% 22%,81% 65%,92% 32%,100% 57%,100% 100%); }
   .ground { position:absolute; left:0; right:0; bottom:0; height:42%; background:#1d493b; border-top:5px solid #487454; }
-  .path { position:absolute; bottom:-12%; left:42%; width:25%; height:52%; background:#80644f; transform:rotate(0deg); border-left:5px solid #b38a64; border-right:5px solid #b38a64; clip-path:polygon(30% 0,70% 0,100% 100%,0 100%); }
-  .tree { position:absolute; width:48px; height:70px; bottom:25%; background:#694b3e; }
-  .tree:before { content:""; position:absolute; left:-17px; top:-27px; width:82px; height:65px; background:#276449; clip-path:polygon(50% 0,100% 48%,76% 48%,100% 82%,0 82%,24% 48%,0 48%); }
-  .tree:after { content:""; position:absolute; left:-6px; top:-14px; width:60px; height:42px; background:#347954; clip-path:polygon(50% 0,100% 55%,75% 55%,100% 100%,0 100%,25% 55%,0 55%); }
-  .tree.t1{left:7%; transform:scale(.9)} .tree.t2{left:23%;bottom:17%;transform:scale(.7)} .tree.t3{right:7%;transform:scale(1.05)} .tree.t4{right:24%;bottom:15%;transform:scale(.65)}
-  .ruin { position:absolute; left:12%; bottom:29%; width:100px; height:86px; background:#7b8291; border:5px solid #a9b1bd; }
-  .ruin:before { content:""; position:absolute; left:-12px; top:-16px; width:114px; height:17px; background:#c2c6c8; border:3px solid #8e9aa8; }
-  .ruin:after { content:""; position:absolute; left:13px; bottom:0; width:22px; height:43px; background:#29334b; box-shadow:37px 0 #29334b; }
-  .house { position:absolute; right:13%; bottom:29%; width:90px; height:64px; background:#8c594c; border:4px solid #d4a078; }
-  .house:before { content:""; position:absolute; left:-12px; top:-31px; width:105px; height:38px; background:#b8735f; clip-path:polygon(50% 0,100% 100%,0 100%); }
-  .house:after { content:""; position:absolute; left:32px; bottom:0; width:22px; height:35px; background:#2b3047; }
+  .path { position:absolute; z-index:1; bottom:-12%; left:42%; width:25%; height:52%; background:linear-gradient(90deg,#6e503f 0 8%,#80644f 8% 92%,#6e503f 92%); border-left:5px solid #b38a64; border-right:5px solid #b38a64; clip-path:polygon(30% 0,70% 0,100% 100%,0 100%); }
+  /* Pixelated wind gestures drifting through the open sky. */
+  .wind { position:absolute; z-index:1; height:4px; background:#b8d7dc; opacity:.72; image-rendering:pixelated; pointer-events:none; }
+  .wind:before,.wind:after { content:""; position:absolute; height:4px; background:#b8d7dc; }
+  .wind.w1 { top:19%; left:19%; width:34px; box-shadow:8px 7px 0 -1px #8ebac7; }
+  .wind.w1:before { left:8px; top:-6px; width:18px; }
+  .wind.w1:after { left:22px; top:6px; width:13px; }
+  .wind.w2 { top:31%; left:49%; width:27px; opacity:.55; }
+  .wind.w2:before { left:6px; top:-6px; width:16px; }
+  .wind.w2:after { left:17px; top:6px; width:12px; }
+  .wind.w3 { top:12%; left:43%; width:22px; opacity:.6; }
+  .wind.w3:before { left:5px; top:-5px; width:14px; }
+  .wind.w3:after { left:14px; top:5px; width:10px; }
+  /* Small pixel rocks scattered across the grassy field. */
+  .rock {
+    position:absolute; z-index:2; width:22px; height:13px;
+    background:linear-gradient(180deg,#a5adac 0 24%,#737f87 24% 72%,#4e6066 72% 100%);
+    clip-path:polygon(18% 25%,36% 0,72% 8%,100% 48%,84% 100%,12% 91%,0 55%);
+    image-rendering:pixelated; filter:drop-shadow(3px 3px 0 #142d2b);
+    pointer-events:none;
+  }
+  .rock:after { content:""; position:absolute; left:5px; top:3px; width:5px; height:3px; background:#d0d0bd; box-shadow:7px 2px 0 #8e9a9b; }
+  .rock.r1{left:8%;bottom:8%;transform:scale(1.1)}
+  .rock.r2{left:25%;bottom:11%;transform:scale(.8)}
+  .rock.r3{left:37%;bottom:7%;transform:scale(1.25)}
+  .rock.r4{left:53%;bottom:13%;transform:scale(.75)}
+  .rock.r5{left:69%;bottom:8%;transform:scale(1.05)}
+  .rock.r6{right:7%;bottom:11%;transform:scale(.9)}
+  .rock.r7{left:16%;bottom:20%;transform:scale(.65)}
+  .rock.r8{right:27%;bottom:18%;transform:scale(.72)}
+  /* Pixelated pine trees: stepped evergreen tiers, lit edges, and a blocky trunk. */
+  .tree {
+    position:absolute; z-index:2; width:18px; height:30px; bottom:25%;
+    background:repeating-linear-gradient(90deg,#624334 0 6px,#81533b 6px 11px,#4b382f 11px 15px);
+    image-rendering:pixelated;
+    box-shadow:4px 0 0 #172b35;
+  }
+  .tree:before {
+    content:""; position:absolute; left:-18px; top:-48px; width:54px; height:52px;
+    background:
+      linear-gradient(90deg,transparent 0 16%,#4e9a62 16% 23%,transparent 23% 76%,#174b3b 76% 84%,transparent 84%),
+      linear-gradient(180deg,#5da86a 0 13%,#2e7950 13% 29%,#1f6848 29% 48%,#18543f 48% 66%,#123f35 66% 100%);
+    clip-path:polygon(50% 0,61% 15%,61% 15%,73% 15%,65% 29%,83% 29%,73% 44%,94% 44%,79% 61%,100% 61%,84% 78%,93% 78%,93% 91%,7% 91%,7% 78%,16% 78%,0 61%,21% 61%,6% 44%,27% 44%,17% 29%,35% 29%,27% 15%,39% 15%);
+    filter:drop-shadow(3px 3px 0 #102e2a);
+  }
+  .tree:after {
+    content:""; position:absolute; left:-10px; top:-34px; width:38px; height:37px;
+    background:repeating-linear-gradient(90deg,transparent 0 8px,#7bc17a 8px 12px,transparent 12px 18px),
+      linear-gradient(180deg,#6eb779 0 20%,#3d965e 20% 42%,#24764d 42% 68%,#18553d 68% 100%);
+    clip-path:polygon(50% 0,63% 20%,76% 20%,67% 38%,88% 38%,73% 59%,100% 59%,79% 80%,90% 80%,90% 100%,10% 100%,10% 80%,21% 80%,0 59%,27% 59%,12% 38%,33% 38%,24% 20%,37% 20%);
+    opacity:.95;
+  }
+  .tree.t1{left:4%; bottom:25%; transform:scale(.95)}
+  .tree.t2{left:30%; bottom:17%; transform:scale(.72)}
+  .tree.t3{right:2%; bottom:25%; transform:scale(1.02)}
+  .tree.t4{right:31%; bottom:15%; transform:scale(.7)}
+  .tree.t5{left:17%; bottom:32%; transform:scale(.62)}
+  .tree.t6{left:37%; bottom:28%; transform:scale(.52)}
+  .tree.t7{right:19%; bottom:34%; transform:scale(.68)}
+  .tree.t8{right:39%; bottom:20%; transform:scale(.58)}
+  .tree.t9{left:2%; bottom:14%; transform:scale(.72)}
+  .tree.t10{right:4%; bottom:13%; transform:scale(.78)}
+  .ruin { position:absolute; z-index:3; left:12%; bottom:29%; width:112px; height:96px; background:repeating-linear-gradient(0deg,#737d8e 0 12px,#858e9c 12px 15px); border:5px solid #a9b1bd; box-shadow:inset 0 0 0 4px #626e80, 5px 5px 0 #18283a; }
+  .ruin:before { content:""; position:absolute; left:-12px; top:-16px; width:126px; height:17px; background:repeating-linear-gradient(90deg,#c2c6c8 0 18px,#aab3bd 18px 21px); border:3px solid #8e9aa8; box-shadow:0 4px 0 #5c687b; }
+  .ruin:after { content:""; position:absolute; left:13px; bottom:0; width:22px; height:43px; background:#29334b; border:3px solid #a5adb7; box-shadow:37px 0 #29334b, 37px 0 0 3px #a5adb7; }
+  .house { position:absolute; z-index:3; right:13%; bottom:29%; width:104px; height:78px; background:repeating-linear-gradient(0deg,#875343 0 12px,#9a6550 12px 15px); border:4px solid #d4a078; box-shadow:inset 0 0 0 4px #714538, 5px 5px 0 #172b35; }
+  .house:before { content:""; position:absolute; left:-12px; top:-42px; width:120px; height:42px; background:repeating-linear-gradient(90deg,#a75f50 0 14px,#c17a64 14px 18px); clip-path:polygon(50% 0,100% 100%,0 100%); border-bottom:4px solid #e0aa7e; filter:drop-shadow(3px 4px 0 #442f38); }
+  .house:after { content:""; position:absolute; left:38px; bottom:0; width:22px; height:39px; background:linear-gradient(90deg,#2b3047 0 45%,#b98560 45% 58%,#2b3047 58%); border:3px solid #d4a078; box-shadow:-27px -18px 0 -5px #f5d38b, 27px -18px 0 -5px #f5d38b; }
   .location { position:absolute; z-index:4; padding:7px 8px; background:#1a2341eF; border:2px solid var(--gold); color:#fff0c8; font-size:.72rem; max-width:135px; text-align:center; }
-  .loc-museum { left:5%; top:13%; } .loc-letters { right:4%; top:27%; } .loc-quest { left:38%; top:43%; } .loc-final { right:4%; bottom:7%; }
+  .loc-museum { left:5%; top:31%; } .loc-letters { right:4%; top:35%; } .loc-quest { left:38%; top:43%; } .loc-final { right:4%; bottom:7%; }
   .player { position:absolute; z-index:5; left:48%; bottom:21%; width:18px; height:24px; background:#26365d; border:3px solid #d9e5ff; box-shadow:0 -8px 0 -1px #e8b58d, 0 4px 0 #11172b; transition:left .12s, bottom .12s; }
   .player:before { content:""; position:absolute; left:-5px; top:3px; width:22px; height:7px; background:#6c8cc7; }
   .player:after { content:""; position:absolute; left:0; bottom:-7px; width:5px; height:7px; background:#e0c0a0; box-shadow:8px 0 #e0c0a0; }
@@ -79,7 +136,7 @@
   .rune { padding:8px 10px; border:1px solid #65759b; background:#141c32; }
   .rune.found { color:#151c2d; background:var(--gold); border-color:#fff0c1; }
   footer { color:#aeb8d0; font-size:.72rem; text-align:center; margin:18px 0 4px; }
-  @media(max-width:760px){ body{padding:10px}.layout{grid-template-columns:1fr}.scene{min-height:330px}.panel{padding:11px}.ruin{transform:scale(.8);transform-origin:bottom left}.house{transform:scale(.8);transform-origin:bottom right}.location{font-size:.65rem;max-width:110px} }
+  @media(max-width:760px){ body{padding:10px}.layout{grid-template-columns:1fr}.scene{min-height:390px}.panel{padding:11px}.ruin{transform:scale(.8);transform-origin:bottom left}.house{transform:scale(.8);transform-origin:bottom right}.location{font-size:.65rem;max-width:110px}.loc-museum{top:34%;left:3%}.loc-letters{top:33%;right:3%}.loc-quest{top:48%;left:35%}.loc-final{bottom:5%;right:3%} }
 </style>
 </head>
 <body>
@@ -99,8 +156,9 @@
     <main class="panel">
       <h2 id="sceneTitle">THE WHISPERING WOODS</h2>
       <div class="scene" id="scene">
-        <div class="stars"></div><div class="mountains"></div><div class="ground"></div><div class="path"></div>
-        <div class="tree t1"></div><div class="tree t2"></div><div class="tree t3"></div><div class="tree t4"></div>
+        <div class="stars"></div><div class="wind w1"></div><div class="wind w2"></div><div class="wind w3"></div><div class="mountains"></div><div class="ground"></div><div class="path"></div>
+        <div class="tree t1"></div><div class="tree t2"></div><div class="tree t3"></div><div class="tree t4"></div><div class="tree t5"></div><div class="tree t7"></div><div class="tree t9"></div><div class="tree t10"></div>
+        <div class="rock r1"></div><div class="rock r2"></div><div class="rock r3"></div><div class="rock r4"></div><div class="rock r5"></div><div class="rock r6"></div><div class="rock r7"></div><div class="rock r8"></div>
         <div class="ruin"></div><div class="house"></div>
         <button class="location loc-museum" onclick="openPlace('museum')">🏛 Museum of Us</button>
         <button class="location loc-letters" onclick="openPlace('letters')">✉ House of Letters</button>
