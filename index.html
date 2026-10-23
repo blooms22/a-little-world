@@ -320,7 +320,7 @@ function openPlace(place) {
   } else if (place === "quest") {
     $("sceneTitle").textContent="THE RUNE CLEARING";
     $("sideTitle").textContent="A LITTLE RIDDLE";
-    $("sideContent").innerHTML = `<p>A stone guardian blocks the path and offers you a riddle:</p><div class="artifact"><p>${escapeHtml(GAME.questRiddle)}</p><label for="answer">Your answer:</label><br><input id="answer" style="margin:8px 0;padding:9px;width:100%;font:inherit;background:#11172b;color:#fff;border:2px solid #8294b8" placeholder="Type your answer here"><button onclick="checkRiddle()">Submit answer</button><p class="small">Hint: think of something that can preserve a memory.</p></div><p id="riddleFeedback"></p>`;
+    $("sideContent").innerHTML = `<p>A stone guardian blocks the path and offers you a riddle 🧙:</p><div class="artifact"><p>${escapeHtml(GAME.questRiddle)}</p><label for="answer">Your answer:</label><br><input id="answer" style="margin:8px 0;padding:9px;width:100%;font:inherit;background:#11172b;color:#fff;border:2px solid #8294b8" placeholder="Type your answer here"><button onclick="checkRiddle()">Submit answer</button><p class="small">Hint: think of something that can preserve a memory.</p></div><p id="riddleFeedback"></p>`;
     $("status").textContent = "A glowing rune floats above an ancient stone.";
   } else if (place === "final") {
     if (found.size < 3) {
