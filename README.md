@@ -1,1 +1,277 @@
-# a-little-world-
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A Little World Called Us</title>
+<style>
+  :root {
+    --ink:#f7edcf; --muted:#c8c0a6; --night:#11172b; --panel:#202844;
+    --panel2:#2a3554; --gold:#ffd783; --pink:#ffb6c9; --mint:#a8f0c6;
+  }
+  * { box-sizing:border-box; }
+  body {
+    margin:0; color:var(--ink); font-family: "Courier New", monospace;
+    background:radial-gradient(ellipse at top,#28395a 0%,#141b31 55%,#0c1122 100%);
+    min-height:100vh; padding:18px;
+  }
+  button { font:inherit; cursor:pointer; color:var(--ink); background:#354568; border:2px solid #8294b8; padding:10px 12px; box-shadow:3px 3px 0 #090e1c; }
+  button:hover, button:focus { background:#4a5e86; outline:2px solid var(--gold); outline-offset:2px; }
+  button:disabled { opacity:.45; cursor:not-allowed; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  header { display:flex; gap:18px; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom:14px; }
+  h1 { font-size:clamp(1.25rem,3vw,2rem); margin:0 0 6px; color:var(--gold); text-shadow:3px 3px #5b3e69; }
+  .subtitle { color:var(--muted); font-size:.85rem; }
+  .hud { display:flex; gap:8px; flex-wrap:wrap; font-size:.8rem; }
+  .pill { border:1px solid #65759b; padding:7px 9px; background:#17213a; }
+  .layout { display:grid; grid-template-columns:minmax(0,1.5fr) minmax(260px,.8fr); gap:14px; }
+  .panel { background:rgba(26,35,60,.95); border:3px solid #6c7fa5; box-shadow:6px 6px 0 #080c18; padding:14px; }
+  .panel h2 { color:var(--gold); font-size:1rem; margin:0 0 10px; }
+  .scene {
+    position:relative; overflow:hidden; border:3px solid #8da1c5;
+    background:#172a3a; min-height:350px; image-rendering:pixelated;
+  }
+  .scene:before { content:""; position:absolute; inset:0; opacity:.95;
+    background:
+      radial-gradient(circle at 78% 14%,#f7df9b 0 13px,transparent 14px),
+      radial-gradient(circle at 78% 14%,transparent 0 23px,#f7df9b22 24px 27px,transparent 28px),
+      linear-gradient(180deg,#243959 0%,#354b5a 48%,#274c42 49%,#1b3c36 100%);
+  }
+  .stars { position:absolute; inset:0; background-image:
+    radial-gradient(#fff1bd 1px,transparent 1.5px),radial-gradient(#d5e7ff 1px,transparent 1.5px);
+    background-size:53px 47px,71px 61px; background-position:10px 7px,28px 22px; opacity:.7; pointer-events:none; }
+  .mountains { position:absolute; bottom:38%; left:-5%; width:110%; height:40%; background:#283d53; clip-path:polygon(0 100%,0 68%,13% 28%,23% 61%,38% 5%,52% 58%,66% 22%,81% 65%,92% 32%,100% 57%,100% 100%); }
+  .ground { position:absolute; left:0; right:0; bottom:0; height:42%; background:#1d493b; border-top:5px solid #487454; }
+  .path { position:absolute; bottom:-12%; left:42%; width:25%; height:50%; background:#80644f; transform:rotate(0deg); border-left:5px solid #b38a64; border-right:5px solid #b38a64; clip-path:polygon(30% 0,70% 0,100% 100%,0 100%); }
+  .tree { position:absolute; width:48px; height:70px; bottom:25%; background:#694b3e; }
+  .tree:before { content:""; position:absolute; left:-17px; top:-27px; width:82px; height:65px; background:#276449; clip-path:polygon(50% 0,100% 48%,76% 48%,100% 82%,0 82%,24% 48%,0 48%); }
+  .tree:after { content:""; position:absolute; left:-6px; top:-14px; width:60px; height:42px; background:#347954; clip-path:polygon(50% 0,100% 55%,75% 55%,100% 100%,0 100%,25% 55%,0 55%); }
+  .tree.t1{left:7%; transform:scale(.9)} .tree.t2{left:23%;bottom:17%;transform:scale(.7)} .tree.t3{right:7%;transform:scale(1.05)} .tree.t4{right:24%;bottom:15%;transform:scale(.65)}
+  .ruin { position:absolute; left:12%; bottom:29%; width:100px; height:86px; background:#7b8291; border:5px solid #a9b1bd; }
+  .ruin:before { content:""; position:absolute; left:-12px; top:-16px; width:114px; height:17px; background:#c2c6c8; border:3px solid #8e9aa8; }
+  .ruin:after { content:""; position:absolute; left:13px; bottom:0; width:22px; height:43px; background:#29334b; box-shadow:37px 0 #29334b; }
+  .house { position:absolute; right:13%; bottom:29%; width:90px; height:64px; background:#8c594c; border:4px solid #d4a078; }
+  .house:before { content:""; position:absolute; left:-12px; top:-31px; width:105px; height:38px; background:#b8735f; clip-path:polygon(50% 0,100% 100%,0 100%); }
+  .house:after { content:""; position:absolute; left:32px; bottom:0; width:22px; height:35px; background:#2b3047; }
+  .location { position:absolute; z-index:4; padding:7px 8px; background:#1a2341eF; border:2px solid var(--gold); color:#fff0c8; font-size:.72rem; max-width:135px; text-align:center; }
+  .loc-museum { left:5%; top:13%; } .loc-letters { right:4%; top:27%; } .loc-quest { left:38%; top:43%; } .loc-final { right:4%; bottom:7%; }
+  .player { position:absolute; z-index:5; left:48%; bottom:21%; width:18px; height:24px; background:#26365d; border:3px solid #d9e5ff; box-shadow:0 -8px 0 -1px #e8b58d, 0 4px 0 #11172b; transition:left .12s, bottom .12s; }
+  .player:before { content:""; position:absolute; left:-5px; top:3px; width:22px; height:7px; background:#6c8cc7; }
+  .player:after { content:""; position:absolute; left:0; bottom:-7px; width:5px; height:7px; background:#e0c0a0; box-shadow:8px 0 #e0c0a0; }
+  .scene-label { position:absolute; z-index:6; left:10px; bottom:10px; padding:6px 8px; background:#10182be8; font-size:.72rem; }
+  .controls { display:flex; gap:7px; flex-wrap:wrap; margin-top:12px; align-items:center; }
+  .hint { color:var(--muted); font-size:.8rem; line-height:1.5; }
+  .status { color:var(--mint); min-height:1.4em; font-size:.82rem; margin-top:8px; }
+  .nav { display:grid; grid-template-columns:repeat(3,1fr); gap:5px; max-width:180px; margin-top:8px; }
+  .nav button { padding:7px; }
+  .content { line-height:1.6; font-size:.9rem; }
+  .content p { margin-top:8px; }
+  .artifact, .letter { background:#303d5b; border:2px solid #7586aa; padding:10px; margin:9px 0; }
+  .artifact h3,.letter h3 { color:#ffe0a0; margin:0 0 6px; font-size:.9rem; }
+  .small { font-size:.75rem; color:var(--muted); }
+  .hidden { display:none !important; }
+  .modal-backdrop { position:fixed; inset:0; background:#070b16cc; display:flex; justify-content:center; align-items:center; padding:16px; z-index:20; }
+  .modal { max-width:560px; width:100%; max-height:85vh; overflow:auto; background:#202844; border:3px solid var(--gold); box-shadow:8px 8px #080c18; padding:18px; }
+  .modal h2 { color:var(--gold); margin-top:0; }
+  .modal p { line-height:1.65; white-space:pre-wrap; }
+  .modal-actions { display:flex; gap:8px; flex-wrap:wrap; margin-top:15px; }
+  .runes { display:flex; gap:8px; flex-wrap:wrap; margin:10px 0; }
+  .rune { padding:8px 10px; border:1px solid #65759b; background:#141c32; }
+  .rune.found { color:#151c2d; background:var(--gold); border-color:#fff0c1; }
+  footer { color:#aeb8d0; font-size:.72rem; text-align:center; margin:18px 0 4px; }
+  @media(max-width:760px){ body{padding:10px}.layout{grid-template-columns:1fr}.scene{min-height:330px}.panel{padding:11px}.ruin{transform:scale(.8);transform-origin:bottom left}.house{transform:scale(.8);transform-origin:bottom right}.location{font-size:.65rem;max-width:110px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>A Little World Called Us</h1>
+      <div class="subtitle">Happy Monthsary Babbu!!❤︎</div>
+    </div>
+    <div class="hud">
+      <div class="pill">✦ Memory stars: <strong id="starCount">0</strong>/3</div>
+      <div class="pill">🗝 Final door: <strong id="doorStatus">Locked</strong></div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <main class="panel">
+      <h2 id="sceneTitle">THE WHISPERING WOODS</h2>
+      <div class="scene" id="scene">
+        <div class="stars"></div><div class="mountains"></div><div class="ground"></div><div class="path"></div>
+        <div class="tree t1"></div><div class="tree t2"></div><div class="tree t3"></div><div class="tree t4"></div>
+        <div class="ruin"></div><div class="house"></div>
+        <button class="location loc-museum" onclick="openPlace('museum')">🏛 Museum of Us</button>
+        <button class="location loc-letters" onclick="openPlace('letters')">✉ House of Letters</button>
+        <button class="location loc-quest" onclick="openPlace('quest')">✦ Rune Clearing</button>
+        <button class="location loc-final" id="finalButton" onclick="openPlace('final')">🔒 Final Room</button>
+        <div class="player" id="player" aria-label="your pixel character"></div>
+        <div class="scene-label" id="sceneLabel">Explore with WASD / arrow keys, or click a place.</div>
+      </div>
+      <div class="controls">
+        <button onclick="movePlayer(-5,0)" aria-label="move left">←</button>
+        <button onclick="movePlayer(0,5)" aria-label="move up">↑</button>
+        <button onclick="movePlayer(0,-5)" aria-label="move down">↓</button>
+        <button onclick="movePlayer(5,0)" aria-label="move right">→</button>
+        <button onclick="openPlace('map')">Return to Map</button>
+      </div>
+      <div class="status" id="status">The woods are quiet. Something glimmers between the trees.</div>
+      <p class="hint">Tip: explore every place. Find the three memory stars in the museum and rune clearing to unlock the final room.</p>
+    </main>
+
+    <aside class="panel">
+      <h2 id="sideTitle">YOUR JOURNAL</h2>
+      <div id="sideContent" class="content">
+        <p>Welcome, traveler.</p>
+        <p>This little world holds memories, letters, and a tiny quest. There is no timer and no wrong way to explore.</p>
+        <p>Your mission: collect three memory stars, then open the Final Room.</p>
+        <div class="runes" id="runeList">
+          <span class="rune" id="rune1">☆ First memory</span>
+          <span class="rune" id="rune2">☆ Second memory</span>
+          <span class="rune" id="rune3">☆ Third memory</span>
+        </div>
+        <button onclick="openPlace('museum')">Visit the museum</button>
+      </div>
+    </aside>
+  </div>
+  <footer>Made with care, a little magic, and a lot of love. Customize the words in index.html before sharing.</footer>
+</div>
+
+<div id="modalRoot"></div>
+
+<script>
+const GAME = {
+  title: "A Little World Called Us",
+  museumIntro: "Every little thing can become an artifact when it matters to the right people. Welcome to our museum.",
+  artifacts: [
+    { title: "Artifact I — The Beginning", subtitle: "A first conversation", text: " It all started with "This is the very beginning of your legendary conversation with Lukc" and ever since then, my love, our conversations has been more than just legendary. 'Hii's and 'whats up's turned into 'i love yous' and 'i miss yous.' You and I, turned into us. And truly, I will forever thank God for giving me you, for leting out paths cross, and for writing you as my Fate. Baby, I love you so much. To discover my love for you in under a month is mindblowing, but also the greatest experience I've ever had. Every single day, I discover how much more I could love you all over again 🥹", icon: "📜" },
+    { title: "Artifact II — A Tiny Tradition", subtitle: "An inside joke or phrase", text: "[Add a phrase he always says, an inside joke, or a funny moment you want to preserve.]", icon: "🗝" },
+    { title: "Artifact III — A Song in a Bottle", subtitle: "A song that reminds you of him", text: "[Name the song and explain what it reminds you of. You can add a song link below.]", icon: "♫", link: "" },
+    { title: "Artifact IV — A Milestone", subtitle: "A moment worth remembering", text: "[Write about a moment when you felt especially grateful for him or proud of your relationship.]", icon: "✦" }
+  ],
+  letters: [
+    { title: "Open when the world feels heavy", text: "[Write a comforting letter. Remind him he does not have to be perfect to be loved, and that he can take things one day at a time.]" },
+    { title: "Open when you're proud of yourself", text: "[Write a letter celebrating his effort, growth, and accomplishments. Mention something specific you admire.]" },
+    { title: "Open when we're older", text: "[Write to your future selves. Describe an ordinary day you hope to share and the kind of people you hope you'll become.]" }
+  ],
+  questRiddle: "I keep a moment but have no voice. I can show a face but cannot smile. What am I?",
+  questAnswer: "photograph",
+  finalMessage: "You made it, traveler.\n\nThis little world is made from pieces of our story, but the best part is that our story is still being written.\n\nThank you for being part of my life, for the moments we've shared, and for all the little things that have become important to me.\n\nHappy monthsary, my favorite adventurer.\n\n[Add your own final message here.]\n\n— [Your name / nickname]"
+};
+
+document.title = GAME.title;
+document.querySelector("h1").textContent = GAME.title;
+let found = new Set();
+let playerX = 48, playerY = 21;
+const $ = id => document.getElementById(id);
+
+function movePlayer(dx, dy) {
+  playerX = Math.max(2, Math.min(92, playerX + dx));
+  playerY = Math.max(4, Math.min(60, playerY + dy));
+  $("player").style.left = playerX + "%";
+  $("player").style.bottom = playerY + "%";
+  $("status").textContent = "You wander a little farther into the woods...";
+}
+document.addEventListener("keydown", e => {
+  if (["ArrowLeft","ArrowRight","ArrowUp","ArrowDown","w","a","s","d","W","A","S","D"].includes(e.key)) {
+    if (e.target.tagName === "INPUT") return;
+    e.preventDefault();
+    if (e.key === "ArrowLeft" || e.key.toLowerCase() === "a") movePlayer(-3,0);
+    if (e.key === "ArrowRight" || e.key.toLowerCase() === "d") movePlayer(3,0);
+    if (e.key === "ArrowUp" || e.key.toLowerCase() === "w") movePlayer(0,3);
+    if (e.key === "ArrowDown" || e.key.toLowerCase() === "s") movePlayer(0,-3);
+  }
+});
+function showModal(title, body, buttons = [{label:"Back to the woods", action:"closeModal()"}]) {
+  $("modalRoot").innerHTML = `<div class="modal-backdrop" role="dialog" aria-modal="true"><div class="modal"><h2>${escapeHtml(title)}</h2><div>${body}</div><div class="modal-actions">${buttons.map(b=>`<button onclick="${b.action}">${escapeHtml(b.label)}</button>`).join("")}</div></div></div>`;
+}
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function closeModal(){ $("modalRoot").innerHTML = ""; }
+function openPlace(place) {
+  if (place === "map") {
+    closeModal(); $("sceneTitle").textContent="THE WHISPERING WOODS";
+    $("sideTitle").textContent="YOUR JOURNAL";
+    $("sideContent").innerHTML = `<p>Your adventure continues. Choose a place to visit, or wander with the arrow keys.</p><p>Memory stars found: <strong>${found.size}/3</strong>.</p><button onclick="openPlace('museum')">Visit the museum</button>`;
+    $("status").textContent = "You return to the crossroads.";
+    return;
+  }
+  if (place === "museum") {
+    $("sceneTitle").textContent="THE MUSEUM OF US";
+    $("sideTitle").textContent="ARTIFACTS";
+    const cards = GAME.artifacts.map((a,i)=>`<div class="artifact"><h3>${a.icon} ${escapeHtml(a.title)}</h3><div class="small">${escapeHtml(a.subtitle)}</div><p>${escapeHtml(a.text)}</p>${a.link ? `<p><a style="color:#ffe0a0" href="${escapeHtml(a.link)}" target="_blank" rel="noopener">Listen to the song ↗</a></p>`:""}<button onclick="collectArtifact(${i})">Read / collect memory</button></div>`).join("");
+    $("sideContent").innerHTML = `<p>${escapeHtml(GAME.museumIntro)}</p>${cards}`;
+    $("status").textContent = "The museum doors creak open. Every artifact has a story.";
+  } else if (place === "letters") {
+    $("sceneTitle").textContent="THE HOUSE OF LETTERS";
+    $("sideTitle").textContent="SEALED LETTERS";
+    $("sideContent").innerHTML = `<p>Three letters wait for the right moments. Open them whenever you need a reminder that someone is cheering for you.</p>` + GAME.letters.map((l,i)=>`<div class="letter"><h3>✉ ${escapeHtml(l.title)}</h3><button onclick="openLetter(${i})">Open letter</button></div>`).join("");
+    $("status").textContent = "The envelopes rustle softly, as if they have been waiting for you.";
+  } else if (place === "quest") {
+    $("sceneTitle").textContent="THE RUNE CLEARING";
+    $("sideTitle").textContent="A LITTLE RIDDLE";
+    $("sideContent").innerHTML = `<p>A stone guardian blocks the path and offers you a riddle:</p><div class="artifact"><p>${escapeHtml(GAME.questRiddle)}</p><label for="answer">Your answer:</label><br><input id="answer" style="margin:8px 0;padding:9px;width:100%;font:inherit;background:#11172b;color:#fff;border:2px solid #8294b8" placeholder="Type your answer here"><button onclick="checkRiddle()">Submit answer</button><p class="small">Hint: think of something that can preserve a memory.</p></div><p id="riddleFeedback"></p>`;
+    $("status").textContent = "A glowing rune floats above an ancient stone.";
+  } else if (place === "final") {
+    if (found.size < 3) {
+      showModal("The Final Room is still sealed", `<p>You need three memory stars to open this door.</p><p>Found: ${found.size}/3</p><p>Explore the museum and solve the riddle in the Rune Clearing.</p>`);
+    } else {
+      $("sceneTitle").textContent="THE FINAL ROOM";
+      $("sideTitle").textContent="THE LAST PAGE";
+      $("sideContent").innerHTML = `<p>The lock glows. The door opens.</p><button onclick="showEnding()">Enter the Final Room ✦</button>`;
+      $("status").textContent = "The final door opens with a quiet chime.";
+      $("doorStatus").textContent="Unlocked";
+      $("finalButton").textContent="✦ Enter Final Room";
+      $("finalButton").style.borderColor="#a8f0c6";
+    }
+  }
+}
+function collectArtifact(i) {
+  if (i < 2 && !found.has("artifact"+i)) {
+    found.add("artifact"+i);
+    updateProgress();
+    showModal("Memory star found!", `<p>You found a star tucked beside this artifact.</p><p><strong>${escapeHtml(GAME.artifacts[i].title)}</strong></p><p>${escapeHtml(GAME.artifacts[i].text)}</p>`);
+  } else {
+    showModal(GAME.artifacts[i].title, `<p>${escapeHtml(GAME.artifacts[i].text)}</p>`);
+  }
+}
+function openLetter(i) {
+  showModal(GAME.letters[i].title, `<p>${escapeHtml(GAME.letters[i].text)}</p>`, [{label:"Fold the letter",action:"closeModal()"}]);
+}
+function checkRiddle() {
+  const input = $("answer");
+  if (!input) return;
+  const answer = input.value.trim().toLowerCase().replace(/[.!?]/g,"");
+  if (answer === GAME.questAnswer.toLowerCase() || answer === "a photograph" || answer === "photo" || answer === "picture" || answer === "a picture") {
+    if (!found.has("rune")) { found.add("rune"); updateProgress(); }
+    $("riddleFeedback").textContent = "Correct! The rune lights up. You found a memory star.";
+    $("riddleFeedback").style.color = "#a8f0c6";
+  } else {
+    $("riddleFeedback").textContent = "Not quite. Think of something that can preserve a moment and show you what it looked like.";
+    $("riddleFeedback").style.color = "#ffd783";
+  }
+}
+function updateProgress() {
+  const count = Math.min(3, found.size);
+  $("starCount").textContent = count;
+  $("doorStatus").textContent = count >= 3 ? "Unlocked" : "Locked";
+  ["rune1","rune2","rune3"].forEach((id,i)=>{
+    const el=$(id); if(!el) return;
+    const on = i < count;
+    el.classList.toggle("found",on);
+    el.textContent = on ? "✦ Memory found" : ["☆ First memory","☆ Second memory","☆ Third memory"][i];
+  });
+  if (count >= 3) {
+    $("finalButton").textContent="✦ Final Room";
+    $("finalButton").style.borderColor="#a8f0c6";
+    $("status").textContent="All three stars are shining. The Final Room is open!";
+  }
+}
+function showEnding() {
+  showModal("A Little World Called Us", `<p>${escapeHtml(GAME.finalMessage)}</p><p style="color:#ffd783;text-align:center">✦ ✧ ♥ ✧ ✦</p>`, [{label:"Stay in our little world",action:"closeModal()"}]);
+}
+</script>
+</body>
+</html>
