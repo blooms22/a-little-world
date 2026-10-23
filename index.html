@@ -136,6 +136,21 @@
   .timeline-list { margin:4px 0 12px; padding-left:24px; }
   .timeline-list li { margin:0 0 10px; padding-left:3px; line-height:1.55; overflow-wrap:anywhere; }
   .timeline-list li::marker { color:var(--gold); }
+  .song-list { display:grid; gap:16px; }
+  .song-item { min-width:0; padding:10px; background:#202844; border:1px solid #7586aa; border-radius:8px; }
+  .song-item h3 { color:#ffe0a0; margin:0 0 9px; font-size:.85rem; line-height:1.5; }
+  .spotify-embed { display:block; max-width:100%; }
+  .spotify-button {
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    margin-top:9px; padding:9px 14px; border:2px solid #a8f0c6; border-radius:999px;
+    background:linear-gradient(135deg,#1db954,#168a40); color:#fff;
+    font:inherit; font-size:.8rem; font-weight:bold; text-decoration:none;
+    box-shadow:3px 3px 0 #10182b; transition:transform .15s, filter .15s;
+  }
+  .spotify-button:hover, .spotify-button:focus-visible {
+    filter:brightness(1.12); transform:translateY(-2px); outline:2px solid #ffe0a0; outline-offset:2px;
+  }
+  .spotify-button:active { transform:translateY(0); box-shadow:1px 1px 0 #10182b; }
   .artifact h3,.letter h3 { color:#ffe0a0; margin:0 0 6px; font-size:.9rem; }
   .small { font-size:.75rem; color:var(--muted); }
   .hidden { display:none !important; }
@@ -232,7 +247,15 @@ const GAME = {
       "Agreeing on 3 Kids — 09/27/2026, 02:19",
       "First Time Aleksandria said 'Nigga' — 10/14/2026, 12:58"
     ], icon: "🗝" },
-    { title: "Artifact III — A Song in a Bottle", subtitle: "Shhhh...you hear voices. Listen to the bards singing songs!", text: "[Name the song and explain what it reminds you of. You can add a song link below.]", icon: "♫", link: "" },
+    { title: "Artifact III — A Song in a Bottle", subtitle: "Shhhh...you hear voices. Listen to the Bards singing songs!", icon: "♫", songs: [
+      { label: "A song that reminds you of Aleksandria", url: "https://open.spotify.com/track/6ZGgaShxOimGDfRz1T1zje?si=c20449e4a8ad4a54" },
+      { label: "A song that reminds Aleksandria of you", url: "https://open.spotify.com/track/1cMFYGtNoh5x3hCWrHAVca?si=6c619d19f2cd4f30" },
+      { label: "Our song", url: "https://open.spotify.com/track/4RCWB3V8V0dignt99LZ8vH?si=0f75899107bc41f6" },
+      { label: "Listen to one of your favorite songs!!", url: "https://open.spotify.com/track/2DlHlPMa4M17kufBvI2lEN?si=02dee4eb63a04b32" },
+      { label: "A song Aleksandria loves right now", url: "https://open.spotify.com/track/3zOYmiNOuyDL0ClxJcEJ0T?si=230ce1b85fb241d0" },
+      { label: "A little Laufey", url: "https://open.spotify.com/track/6dWilYAxP2aJbTTt0UsatK?si=519f901967594e9c" },
+      { label: "Don't forget Linkin Park before you go!", url: "https://open.spotify.com/track/7AB0cUXnzuSlAnyHOqmrZr?si=0eedc719b41d4301" }
+    ] },
     { title: "Artifact IV — A Milestone", subtitle: "A moment worth remembering", text: "[Write about a moment when you felt especially grateful for him or proud of your relationship.]", icon: "✦" }
   ],
   letters: [
@@ -286,7 +309,7 @@ function openPlace(place) {
   if (place === "museum") {
     $("sceneTitle").textContent="THE MUSEUM OF US";
     $("sideTitle").textContent="ARTIFACTS";
-    const cards = GAME.artifacts.map((a,i)=>`<details class="artifact"><summary><span>${a.icon} ${escapeHtml(a.title)}</span><span class="artifact-subtitle">${escapeHtml(a.subtitle)}</span></summary><div class="artifact-details">${a.items ? `<ol class="timeline-list">${a.items.map(item=>`<li>${escapeHtml(item)}</li>`).join("")}</ol>` : `<p>${escapeHtml(a.text)}</p>`}${a.link ? `<p><a style="color:#ffe0a0" href="${escapeHtml(a.link)}" target="_blank" rel="noopener">Listen to the song ↗</a></p>`:""}<button onclick="collectArtifact(${i})">${i < 2 && !found.has("artifact"+i) ? "Collect memory star ✦" : "Memory collected ✓"}</button></div></details>`).join("");
+    const cards = GAME.artifacts.map((a,i)=>`<details class="artifact"><summary><span>${a.icon} ${escapeHtml(a.title)}</span><span class="artifact-subtitle">${escapeHtml(a.subtitle)}</span></summary><div class="artifact-details">${a.items ? `<ol class="timeline-list">${a.items.map(item=>`<li>${escapeHtml(item)}</li>`).join("")}</ol>` : a.songs ? `<div class="song-list">${a.songs.map(song=>{const trackUrl=song.url.split("?")[0];const trackId=trackUrl.split("/track/")[1];const embedUrl="https://open.spotify.com/embed/track/"+encodeURIComponent(trackId);return `<section class="song-item"><h3>${escapeHtml(song.label)}</h3><iframe class="spotify-embed" src="${escapeHtml(embedUrl)}" title="${escapeHtml(song.label)}" width="100%" height="152" style="border:0;border-radius:12px" loading="lazy" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin"></iframe><a class="spotify-button" href="${escapeHtml(song.url)}" target="_blank" rel="noopener"><span aria-hidden="true">♫</span> Listen in Spotify <span aria-hidden="true">↗</span></a></section>`}).join("")}</div>` : `<p>${escapeHtml(a.text)}</p>`}${a.link ? `<p><a style="color:#ffe0a0" href="${escapeHtml(a.link)}" target="_blank" rel="noopener">Listen to the song ↗</a></p>`:""}<button onclick="collectArtifact(${i})">${i < 2 && !found.has("artifact"+i) ? "Collect memory star ✦" : "Memory collected ✓"}</button></div></details>`).join("");
     $("sideContent").innerHTML = `<p>${escapeHtml(GAME.museumIntro)}</p>${cards}`;
     $("status").textContent = "The museum doors creak open. Every artifact has a story.";
   } else if (place === "letters") {
